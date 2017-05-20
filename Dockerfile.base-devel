@@ -1,5 +1,4 @@
 FROM scratch
-MAINTAINER ArchLinux Dockerimage Maintainers
 
 ADD arch-rootfs/ /
 ADD additional/ /
@@ -22,5 +21,7 @@ RUN pacman-key --init \
     /var/lib/pacman/sync/* \
     /README \
     /etc/pacman.d/mirrorlist.pacnew
+
+RUN pacman -Syyu
 
 CMD /bin/bash

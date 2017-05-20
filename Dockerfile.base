@@ -22,4 +22,6 @@ RUN pacman-key --init \
     /README \
     /etc/pacman.d/mirrorlist.pacnew
 
+RUN pacman -Syyu
+
 CMD /bin/bash
