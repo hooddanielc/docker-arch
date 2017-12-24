@@ -1,7 +1,16 @@
-TAR_DATE="$(date --date="${1:-"now"}" +'%Y.%m').01"
-ARCHLINUX_ARCH=x86_64
+CURRENT_DATE=$(./print-latest-release.sh)
+ALREADY_BUILT=$(docker images | grep dhoodlum/arch-base | grep $CURRENT_DATE)
 
-mkdir -p arch-rootfs
+# download if user has not built latest version
+if [ -z "$ALREADY_BUILT"  ]; then
+  echo "Downloading newest Arch Linux - ${CURRENT_DATE}"
 
-wget -q --no-cookies -O - https://archive.archlinux.org/iso/${TAR_DATE}/archlinux-bootstrap-${TAR_DATE}-${ARCHLINUX_ARCH}.tar.gz \
-  | tar xz -f - --strip-components=1 --directory=./arch-rootfs root.${ARCHLINUX_ARCH}/
+  # remove old files if they exist
+  if [ -d arch-rootfs ]; then
+    echo "need root permission to remove ${arch-rootfs}"
+    sudo rm -rf arch-rootfs
+  fi
+
+  docker build -f Dockerfile.download-arch -t dhoodlum/download-arch .
+  docker run --rm -v $(pwd):/data -t dhoodlum/download-arch
+fi

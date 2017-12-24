@@ -1,0 +1,18 @@
+FROM debian:jessie
+
+ENV ARCHLINUX_ARCH x86_64
+
+RUN apt update
+RUN apt install -y wget
+RUN mkdir /data
+RUN useradd -ms /bin/bash developer
+RUN chown -R developer /data
+
+USER developer
+
+CMD echo $USER && \
+    export TAR_DATE=$(date +%Y.%m.01) && \
+    export DOWNLOAD_URL=https://archive.archlinux.org/iso/${TAR_DATE}/archlinux-bootstrap-${TAR_DATE}-${ARCHLINUX_ARCH}.tar.gz && \
+    echo "Downloading ${DOWNLOAD_URL}" && \
+    mkdir -p /data/arch-rootfs && \
+    wget -q --no-cookies -O - $DOWNLOAD_URL | tar xz -f - --strip-components=1 --directory=/data/arch-rootfs root.${ARCHLINUX_ARCH}/

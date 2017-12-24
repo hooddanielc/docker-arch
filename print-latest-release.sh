@@ -1,0 +1,1 @@
+docker run -t debian:jessie date +%Y.%m.01 | tr -d '[:space:]'
